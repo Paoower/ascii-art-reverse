@@ -5,53 +5,107 @@ This Go program converts ASCII art back into its original text representation. I
 ## Arborescence
 
 - `main.go`
-- `asciiart/`
-  - `asciiart.go`
+- `color.sh`
+- `output.sh`
+- `fs.sh`
+- `reverse.sh`
+- `test/`
+  - `example00.txt`
+  - `example01.txt`
+  - `example02.txt`
+  - `example03.txt`
+  - `example04.txt`
+  - `example05.txt`
+  - `example06.txt`
+  - `example07.txt`
+- `src/`
+  - `ascii.go`
+  - `banners.go`
+  - `colored.go`
+  - `justify.go`
+  - `reversed.go`
+- `handlers/`
+  - `align.go`
+  - `color.go`
+  - `default.go`
+  - `output.go`
+  - `reverse.go`
 - `banners/`
-    - `standard.txt`
-    - `shadow.txt`
-    - `thinkertoy.txt`
+  - `shadow.txt`
+  - `standard.txt`
+  - `thinkertoy.txt`
+  - `train.txt`
+
 ## Usage
 
 To clone the repository:
 ```bash
 git clone https://zone01normandie.org/git/mtrebert/ascii-art-reverse.git
+
+cd ascii-art-reverse
 ```
 
 To run the program to generate ASCII art from a string:
 ```bash
-cd ascii-art-reverse
-
 go run . "hello world"
 ```
 
 To reverse ASCII art from a file:
 ```bash
-cd ascii-art-reverse
-
 go run . --reverse=file.txt
 ```
+
+To Test the program:
+- Test reverse :
+```bash
+./reverse.sh
+```
+- Test color :
+```bash
+./color.sh
+```
+
+- Test output.sh :
+```bash
+./output.sh
+
+rm -r outputtest
+```
+- Test fs :
+```bash
+./fs.sh
+```
+
 
 ## Files
 
 ### [main.go](main.go)
 
-Handles command-line arguments and interacts with the `asciiart` package to either generate ASCII art or reverse it.
+Handles command-line arguments and interacts with the `handlers` package to manage ASCII art generation, coloring, output, alignment, and reversal based on user input.
 
-### [asciiart/](asciiart/)
+### [src/](src/)
 
-- **[asciiart.go](asciiart/asciiart.go)**:
-  Contains functions for generating ASCII art from a string (`GetColoredAscii`) and reversing ASCII art from a file (`ReverseAsciiArt`).
+Contains source files implementing core functionalities.
+
+- **[ascii.go](src/ascii.go)**: Functions for generating ASCII art.
+- **[banners.go](src/banners.go)**: Functions for handling different banner styles.
+- **[colored.go](src/colored.go)**: Functions for coloring ASCII art.
+- **[justify.go](src/justify.go)**: Functions for justifying text in ASCII art.
+- **[reversed.go](src/reversed.go)**: Functions for reversing ASCII art.
+
+### [handlers/](handlers/)
+
+Contains handlers for various command-line options.
+
+- **[align.go](handlers/align.go)**: Handles alignment of ASCII art.
+- **[color.go](handlers/color.go)**: Handles coloring of ASCII art.
+- **[default.go](handlers/default.go)**: Default handler for ASCII art generation.
+- **[output.go](handlers/output.go)**: Handles output file generation for ASCII art.
+- **[reverse.go](handlers/reverse.go)**: Handles reversing ASCII art from files.
 
 ### [banners/](banners/)
-- **[standard.txt](banners/standard.txt)**:
-  ASCII representations of letters in standard style.
 
-- **[shadow.txt](banners/shadow.txt)**:
-  ASCII representations of letters in shadow style.
-
-- **[thinkertoy.txt](banners/thinkertoy.txt)**:
-  ASCII representations of letters in thinkertoy style.
+Contains ASCII representations of letters in various styles.
 
 ## Example
 
