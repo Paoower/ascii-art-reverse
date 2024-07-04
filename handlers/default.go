@@ -3,19 +3,18 @@ package handlers
 import (
 	src "ascii-art-reverse/src"
 	"fmt"
-	"os"
 	"strings"
 )
 
-// Handle default case
-func HandleDefault(args []string) {
+// HandleDefault handles the default case for the program
+func HandleDefault(args []string) error {
 	// Checking if the correct number of arguments is provided
 	if len(args) < 2 || len(args) > 3 {
-		fmt.Println("Usage: go run . [STRING] [BANNER]\nEX: go run . something standard")
-		return
+		return fmt.Errorf("usage: go run . [string] [banner]\nex: go run . something standard")
 	}
+
 	// Get the input string and banner style from command line arguments
-	input := os.Args[1]
+	input := args[1]
 	style := "standard"
 	if len(args) == 3 {
 		style = args[2]
@@ -24,11 +23,10 @@ func HandleDefault(args []string) {
 	// Use correct Banner files
 	bannerFile, err := src.GetBannerFile(style)
 	if err != nil {
-		fmt.Println("Error:", err)
-		return
+		return fmt.Errorf("failed to get banner file: %v", err)
 	}
 
-	// Store line and get line of input
+	// Store lines and get lines of input
 	lines := make([]string, 0)
 	words := strings.Split(input, "\\n")
 
@@ -36,10 +34,14 @@ func HandleDefault(args []string) {
 		if word == "" {
 			lines = append(lines, "")
 		} else {
-			lines = append(lines, src.GetWord(word, bannerFile)...)
+			wordLines := src.GetWord(word, bannerFile)
+			lines = append(lines, wordLines...)
 		}
 	}
+
 	for _, line := range lines {
 		fmt.Println(line)
 	}
+
+	return nil
 }

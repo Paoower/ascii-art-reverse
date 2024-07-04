@@ -7,25 +7,23 @@ import (
 	"strings"
 )
 
-// Handle --reverse=<fileName> option
-func HandleReverse(fileName string) {
+// HandleReverse handles the --reverse=<fileName> option
+func HandleReverse(fileName string) error {
 	// Read font art
 	fContent, err := os.ReadFile("banners/standard.txt")
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("could not read banner file: %v", err)
 	}
 	fontData := string(fContent)
 	font := strings.Split(fontData, "\n")
 
 	// Read art file for reverse
-
-	Content, err := os.ReadFile(fileName)
+	content, err := os.ReadFile(fileName)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("could not read input file: %v", err)
 	}
-	textContent := strings.ReplaceAll(string(Content), "$", "")
-	textData := string(textContent)
-	text := strings.Split(textData, "\n")
+	textContent := strings.ReplaceAll(string(content), "$", "")
+	text := strings.Split(textContent, "\n")
 
 	// Process the text using the Reverse function from asciiart package
 	if len(text) > 9 {
@@ -33,14 +31,15 @@ func HandleReverse(fileName string) {
 			if len(text[i]) > 0 {
 				src.Reverse(font, text[i:i+8], 0, 0, 1)
 				fmt.Println()
-				i = i + 8
+				i += 8
 			} else {
 				fmt.Println()
-				i = i + 1
+				i++
 			}
 		}
 	} else {
 		src.Reverse(font, text, 0, 0, 1)
 		fmt.Println()
 	}
+	return nil
 }

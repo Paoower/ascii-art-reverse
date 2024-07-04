@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-// Handle --output=<OPTION> option
-func HandleOutput(args []string) {
+// HandleOutput handles the --output=<OPTION> option
+func HandleOutput(args []string) error {
 	log.SetFlags(log.Ltime)
 	log.SetPrefix("ascii-art-output:")
 
@@ -18,20 +18,16 @@ func HandleOutput(args []string) {
 		for i := 0; i < len(output)-1; i++ {
 			fmt.Println(output[i])
 		}
-		return
+		return nil
 	}
-
+	usageMessage := "Usage: go run . [OPTION] [STRING] [BANNER]\nEX: go run . --output=<fileName.txt> something standard"
 	// Checking if the correct number of arguments is provided
 	if len(args) != 4 {
-		fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]")
-		fmt.Println("EX: go run . --output=<fileName.txt> something standard")
-		return
+		return fmt.Errorf(usageMessage)
 	}
 
 	if !strings.Contains(args[1], "--output=") {
-		fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]")
-		fmt.Println("EX: go run . --output=<fileName.txt> something standard")
-		return
+		return fmt.Errorf(usageMessage)
 	}
 
 	outputFilename := args[1][9:]
@@ -42,12 +38,13 @@ func HandleOutput(args []string) {
 
 	output := src.GetAscii(input, style)
 	if output == "" {
-		log.Fatal("Could not save file")
+		return fmt.Errorf("could not generate ASCII art")
 	}
 
 	err := os.WriteFile(outputFilename, []byte(output+"\n"), 0600)
 	if err != nil {
-		log.Fatal("Could not save file")
+		return fmt.Errorf("could not save file: %v", err)
 	}
-	fmt.Printf("File saved at %v.txt\n", outputFilename)
+	fmt.Printf("File saved at %v\n", outputFilename)
+	return nil
 }

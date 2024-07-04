@@ -1,63 +1,64 @@
 package handlers
 
 import (
-	src "ascii-art-reverse/src"
 	"fmt"
 	"log"
 	"strings"
+
+	src "ascii-art-reverse/src"
 )
 
-// Handle --color=<color> option
-func HandleColor(args []string) {
+func HandleColor(args []string) error {
 	log.SetFlags(log.Ltime)
 	log.SetPrefix("ascii-art-color:")
+
 	var lines []string
 	var err error
 
+	usageMessage := "Usage: go run . --color=<color> <substring to be colored> \"something\""
+
 	if len(args) > 5 || len(args) == 1 {
-		fmt.Println("Usage: go run . [OPTION] [STRING]")
-		fmt.Println()
-		fmt.Println(`EX: go run . --color=<color> <substring to be colored> "something"`)
+		return fmt.Errorf(usageMessage)
 	}
 
-	if len(args) == 2 {
+	switch len(args) {
+	case 2:
 		lines, err = src.GetColoredAscii(args[1], "standard", "", "NONE")
 		if err != nil {
-			return
+			return fmt.Errorf("error getting colored ASCII: %v", err)
 		}
-	}
-
-	if len(args) == 3 {
+	case 3:
 		if strings.HasPrefix(args[1], "--color=") {
-			lines, err = src.GetColoredAscii(args[2], "standard", args[2], src.GetColor(args[1]))
+			color := src.GetColor(args[1])
+			lines, err = src.GetColoredAscii(args[2], "standard", args[2], color)
 			if err != nil {
-				return
+				return fmt.Errorf("error getting colored ASCII: %v", err)
 			}
 		} else {
 			lines, err = src.GetColoredAscii(args[1], args[2], "", "NONE")
 			if err != nil {
-				return
+				return fmt.Errorf("error getting colored ASCII: %v", err)
 			}
 		}
-	}
-
-	color := src.GetColor(args[1])
-
-	if len(args) == 4 {
+	case 4:
+		color := src.GetColor(args[1])
 		lines, err = src.GetColoredAscii(args[3], "standard", args[2], color)
 		if err != nil {
-			return
+			return fmt.Errorf("error getting colored ASCII: %v", err)
 		}
-	}
-
-	if len(args) == 5 {
+	case 5:
+		color := src.GetColor(args[1])
 		lines, err = src.GetColoredAscii(args[3], args[4], args[2], color)
 		if err != nil {
-			return
+			return fmt.Errorf("error getting colored ASCII: %v", err)
 		}
+	default:
+		return fmt.Errorf(usageMessage)
 	}
 
-	for _, l := range lines {
-		fmt.Println(l)
+	for _, line := range lines {
+		fmt.Println(line)
 	}
+
+	return nil
 }

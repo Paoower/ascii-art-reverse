@@ -89,7 +89,7 @@ func GetAscii(input, style string) string {
 	return str
 }
 
-func fileOpen(filename string) string {
+func FileOpen(filename string) string {
 	f, err := os.ReadFile(filename)
 	if err != nil {
 		return ""
@@ -101,7 +101,7 @@ func fileOpen(filename string) string {
 
 func GetWord(input string, bannerFile string) []string {
 	lines := make([]string, 8)
-	content := fileOpen(bannerFile)
+	content := FileOpen(bannerFile)
 	for _, char := range input {
 		c := strings.Split(GetLetter(content, int(char)), "\n")
 		for i := 0; i < len(lines); i++ {

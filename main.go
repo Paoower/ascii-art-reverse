@@ -3,6 +3,7 @@ package main
 import (
 	handlers "ascii-art-reverse/handlers"
 	"flag"
+	"fmt"
 	"os"
 )
 
@@ -16,17 +17,40 @@ func main() {
 	// Parse command-line arguments
 	flag.Parse()
 	Args := os.Args
+
+	// Check for incorrect usage of flags
+	if len(Args) < 2 {
+		fmt.Fprintln(os.Stderr, "Invalid number of arguments")
+		flag.Usage()
+		os.Exit(1)
+	}
+
 	// Handle different command-line options
 	switch {
 	case *reverseOption != "":
-		handlers.HandleReverse(*reverseOption)
+		if err := handlers.HandleReverse(*reverseOption); err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			os.Exit(1)
+		}
 	case *colorOption != "":
-		handlers.HandleColor(Args)
+		if err := handlers.HandleColor(Args); err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			os.Exit(1)
+		}
 	case *outputOption != "":
-		handlers.HandleOutput(Args)
+		if err := handlers.HandleOutput(Args); err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			os.Exit(1)
+		}
 	case *alignOption != "":
-		handlers.HandleAlign(Args)
+		if err := handlers.HandleAlign(Args); err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			os.Exit(1)
+		}
 	default:
-		handlers.HandleDefault(Args)
+		if err := handlers.HandleDefault(Args); err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			os.Exit(1)
+		}
 	}
 }
